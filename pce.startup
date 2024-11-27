@@ -6,3 +6,6 @@ ip link set dev eth0 up
 
 # Configuration des routes
 ip route add default 172.16.12.254 via eth1
+
+# Configuration du server DNS
+echo 'nameserver 8.8.8.8' > /etc/resolv.conf
