@@ -1,0 +1,19 @@
+#!/bin/bash
+
+# Configuration des adresses ip
+ip address add 10.0.0.1/28 dev eth0
+ip address add 172.16.1.254/24 dev eth1
+ip link set dev eth0 up
+ip link set dev eth1 up
+
+# Configuration des routes
+ip route add default via 10.0.0.9
+ip route add 172.16.2.0/26 via 10.0.0.2
+ip route add 172.16.4.0/22 via 10.0.0.3
+ip route add 172.16.8.0/22 via 10.0.0.4
+ip route add 172.16.12.0/24 via 10.0.0.5
+ip route add 172.16.16.0/22 via 10.0.0.6
+ip route add 172.16.3.16/28 via 10.0.0.7
+ip route add 172.16.20.0/24 via 10.0.0.8
+
+
