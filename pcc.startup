@@ -6,3 +6,17 @@ ip link set dev eth0 up
 
 # Configuration des routes
 ip route add default 172.16.7.254 via eth1
+
+# Configuration du server DNS
+echo 'nameserver 8.8.8.8' > /etc/resolv.conf
+
+# Mise à jour des packets
+apt-get update
+apt-get upgrade -y > /var/log/apt-upgrade.log 2>&1
+
+# Installation du client SHH pour permettre SFTP
+apt-get install -y openssh-client
+
+# Création d'un utilisateur SFTP
+useradd -m admin
+echo "admin:admin" | chpasswd
