@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# Configuration des adresses ip
+ip address add 172.16.3.17/28 dev eth0
+ip link set dev eth0 up
+
+# COnfiguration des routes
+ip route add default 172.16.3.30 via eth1
