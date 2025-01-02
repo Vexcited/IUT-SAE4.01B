@@ -10,13 +10,17 @@ ip route add default 172.16.7.254 via eth1
 # Configuration du server DNS
 echo 'nameserver 8.8.8.8' > /etc/resolv.conf
 
-# Mise à jour des packets
-apt-get update
+# Installation du client SHH pour permettre SFTP + de lynx pour tester les connexions web
+apt-get update -y
 apt-get upgrade -y > /var/log/apt-upgrade.log 2>&1
-
-# Installation du client SHH pour permettre SFTP
 apt-get install -y openssh-client
+apt-get install -y lynx
 
 # Création d'un utilisateur SFTP
 useradd -m admin
 echo "admin:admin" | chpasswd
+
+# Exemple de commande à taper pour tester
+echo "Testez l'accès au site public avec : lynx http://172.16.3.28"
+echo "Testez l'accès à l'Intranet avec : lynx http://172.16.3.28/intranet"
+echo "Testez l'accès à sftp : sftp admin@172.16.20.2"
