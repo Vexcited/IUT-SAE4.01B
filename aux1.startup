@@ -10,3 +10,7 @@ ip route add default via 172.16.20.254
 # Configuration du server DNS
 echo 'nameserver 8.8.8.8' > /etc/resolv.conf
 
+# Configuration iptables 
+iptables -P INPUT DROP
+iptables -A INPUT -p icmp -j ACCEPT  # Autoriser ping uniquement
+iptables -A INPUT -j DROP

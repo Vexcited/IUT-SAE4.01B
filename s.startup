@@ -37,3 +37,9 @@ echo "<VirtualHost *:80>
 
 # Redémarrer Apache pour appliquer les changements
 service apache2 restart
+
+# Configuration iptables
+iptables -P INPUT DROP
+iptables -A INPUT -p tcp --dport 443 -j ACCEPT  # HTTPS pour Site Public et Intranet
+iptables -A INPUT -p icmp -j ACCEPT           # Autoriser ping
+iptables -A INPUT -j DROP
