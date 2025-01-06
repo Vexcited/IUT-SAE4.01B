@@ -20,8 +20,8 @@ ip route add 172.16.20.0/24 via 10.0.0.8
 echo 'nameserver 8.8.8.8' > /etc/resolv.conf
 
 # Configuration iptables
-iptables -P FORWARD DROP
-iptables -A FORWARD -p udp --dport 53 -j ACCEPT  # DNS
-iptables -A FORWARD -p tcp --dport 443 -j ACCEPT  # HTTPS (Site & Intranet)
-iptables -A FORWARD -p tcp --dport 1224 -j ACCEPT  # Gestion patients
-iptables -A FORWARD -j DROP
+#iptables -P FORWARD DROP
+#iptables -A FORWARD -p udp --dport 53 -j ACCEPT  # DNS
+#iptables -A FORWARD -p tcp --dport 443 -j ACCEPT  # HTTPS (Site & Intranet)
+#iptables -A FORWARD -p tcp --dport 1224 -j ACCEPT  # Gestion patients
+#iptables -A FORWARD -j DROP

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Configuration des adresses ip
-ip address add 10.0.0.4/22 dev eth0
+ip address add 10.0.0.4/28 dev eth0
 ip address add 172.16.11.254/22 dev eth1
 ip link set dev eth0 up
 ip link set dev eth1 up
@@ -20,7 +20,7 @@ ip route add 172.16.20.0/24 via 10.0.0.8
 echo 'nameserver 8.8.8.8' > /etc/resolv.conf
 
 # Configuration iptables
-iptables -P FORWARD DROP
-iptables -A FORWARD -s 172.16.8.0/22 -p tcp --dport 80 -j ACCEPT  # Accès au site public
-iptables -A FORWARD -s 172.16.8.0/22 -p icmp -j ACCEPT            # Autoriser ping
-iptables -A FORWARD -j DROP
+#iptables -P FORWARD DROP
+#iptables -A FORWARD -s 172.16.8.0/22 -p tcp --dport 80 -j ACCEPT  # Accès au site public
+#iptables -A FORWARD -s 172.16.8.0/22 -p icmp -j ACCEPT            # Autoriser ping
+#iptables -A FORWARD -j DROP
