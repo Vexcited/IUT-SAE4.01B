@@ -10,8 +10,9 @@ ip route add default via 172.16.3.30
 # Configuration du server DNS
 echo 'nameserver 8.8.8.8' > /etc/resolv.conf
 
-# Configuration iptables
-#iptables -P INPUT DROP
-#iptables -A INPUT -p udp --dport 53 -j ACCEPT  # DNS
-#iptables -A INPUT -p icmp -j ACCEPT           # Autoriser ping
-#iptables -A INPUT -j DROP
+# Configuration des règles iptables
+iptables -P INPUT DROP
+
+iptables -A INPUT -p udp --dport 53 -j ACCEPT  # Autoriser DNS (résolution de noms)
+iptables -A INPUT -p icmp -j ACCEPT           # Autoriser les pings pour la supervision
+iptables -A INPUT -j DROP

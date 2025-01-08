@@ -17,11 +17,11 @@ ip route add 172.16.20.0/24 via 10.0.0.8
 # Configuration du server DNS
 echo 'nameserver 8.8.8.8' > /etc/resolv.conf
 
-# Configuration iptables
-#iptables -P FORWARD DROP
-iptables -t nat -A POSTROUTING -o eth1 -j MASQUERADE 					# permettre de sortir vers Internet
-#iptables -A FORWARD -i eth0 -o eth0 -j ACCEPT 						# Autoriser le trafic interne
-#iptables -A FORWARD -i eth0 -o eth1 -j ACCEPT 						# Autoriser le trafic sortant vers Internet 
-#iptables -A FORWARD -i eth1 -o eth0 -m state --state RELATED,ESTABLISHED -j ACCEPT 	# Autoriser les réponses des connexions initiées vers Internet
-#iptables -A FORWARD -j DROP 								# Bloquer tout autre trafic
+# Configuration des règles iptables
+iptables -P FORWARD DROP
 
+iptables -t nat -A POSTROUTING -o eth1 -j MASQUERADE  # NAT pour permettre l'accès Internet
+iptables -A FORWARD -i eth0 -o eth0 -j ACCEPT  # Autoriser le trafic interne entre sous-réseaux
+iptables -A FORWARD -i eth0 -o eth1 -j ACCEPT  # Autoriser le trafic sortant vers Internet
+iptables -A FORWARD -i eth1 -o eth0 -m state --state RELATED,ESTABLISHED -j ACCEPT  # Autoriser les réponses des connexions Internet
+iptables -A FORWARD -j DROP

@@ -23,9 +23,9 @@ systemctl start ssh
 useradd -m admin
 echo "admin:admin" | chpasswd
 
-# Configuration iptables
-#iptables -P INPUT DROP
-#iptables -A INPUT -p tcp --dport 3306 -s 172.16.3.28 -j ACCEPT  # MySQL depuis Machine S
-#iptables -A INPUT -p tcp --dport 22 -j ACCEPT                  # SFTP pour chercheurs
-#iptables -A INPUT -p icmp -j ACCEPT                            # Autoriser ping
-#iptables -A INPUT -j DROP
+# Configuration des règles iptables
+iptables -P INPUT DROP
+
+iptables -A INPUT -p tcp --dport 22 -s 172.16.4.0/22 -j ACCEPT  # Autoriser SFTP pour les chercheurs
+iptables -A INPUT -p icmp -j ACCEPT  # Autoriser les pings pour la supervision
+iptables -A INPUT -j DROP
