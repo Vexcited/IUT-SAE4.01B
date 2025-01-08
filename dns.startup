@@ -78,6 +78,7 @@ echo 'options {
         8.8.8.8;
         8.8.4.4;
     };
+    allow-recursion { any; };
     dnssec-validation auto;
     listen-on { any; };
 };' > /etc/bind/named.conf.options

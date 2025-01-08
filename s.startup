@@ -28,6 +28,22 @@ echo "<VirtualHost *:80>
 <VirtualHost *:80>
     ServerName intranet.chu
     DocumentRoot /var/www/intranet
+</VirtualHost>
+
+VirtualHost *:443>
+    ServerName sitepublic.chu
+    DocumentRoot /var/www/public
+    SSLEngine on
+    SSLCertificateFile /etc/ssl/certs/ssl-cert-snakeoil.pem
+    SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key
+</VirtualHost>
+
+<VirtualHost *:443>
+    ServerName intranet.chu
+    DocumentRoot /var/www/intranet
+    SSLEngine on
+    SSLCertificateFile /etc/ssl/certs/ssl-cert-snakeoil.pem
+    SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key
 </VirtualHost>" > /etc/apache2/sites-available/000-default.conf
 
 # Redémarrer Apache pour appliquer les changements
