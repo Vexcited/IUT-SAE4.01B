@@ -8,12 +8,12 @@ ip link set dev eth0 up
 ip route add default via 172.16.19.254
 
 # Configuration du server DNS
-echo 'nameserver 8.8.8.8' > /etc/resolv.conf
+echo 'nameserver 172.16.3.17' > /etc/resolv.conf
 
 # Installation de lynx pour tester les connexions web
 apt-get update
 apt-get install -y lynx
 
 # Exemple de commande à taper pour tester
-echo "Testez l'accès au site public avec : lynx http://172.16.3.28"
-echo "Testez l'accès à l'Intranet avec : lynx http://172.16.3.28/intranet"
+echo "Testez l'accès au site public avec : lynx sitepublic.chu"
+echo "Testez l'accès à l'Intranet avec : lynx intranet.chu"

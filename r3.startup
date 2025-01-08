@@ -17,13 +17,27 @@ ip route add 172.16.3.16/28 via 10.0.0.7
 ip route add 172.16.20.0/24 via 10.0.0.8
 
 # Configuration du server DNS
-echo 'nameserver 8.8.8.8' > /etc/resolv.conf
+echo 'nameserver 172.16.3.17' > /etc/resolv.conf
 
-# Configuration des règles iptables
-iptables -P FORWARD DROP
 
-iptables -A FORWARD -s 172.16.4.0/22 -d 172.16.3.28 -p tcp --dport 443 -j ACCEPT  # Accès au site public/Intranet
-iptables -A FORWARD -s 172.16.4.0/22 -d 172.16.20.2 -p tcp --dport 22 -j ACCEPT   # Accès SFTP vers BDD
-iptables -A FORWARD -s 172.16.4.0/22 -d 8.8.8.8 -p udp --dport 53 -j ACCEPT       # Résolution DNS
-iptables -A FORWARD -s 172.16.4.0/22 -o eth1 -j ACCEPT                           # Accès Internet
-iptables -A FORWARD -j DROP
+# Politique par défaut
+# iptables -P INPUT DROP
+# iptables -P FORWARD DROP
+# iptables -P OUTPUT ACCEPT
+
+# Connexions établies et liées
+# iptables -A FORWARD -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+
+# Résolution DNS pour enseignants/chercheurs
+# iptables -A FORWARD -p udp --dport 53 -s 172.16.4.0/22 -d 172.16.3.17 -j ACCEPT
+# iptables -A FORWARD -p udp --sport 53 -s 172.16.3.17 -d 172.16.4.0/22 -j ACCEPT
+
+# Accès au site public et intranet
+# iptables -A FORWARD -p tcp --dport 80 -s 172.16.4.0/22 -d 172.16.3.28 -j ACCEPT
+# iptables -A FORWARD -p tcp --dport 443 -s 172.16.4.0/22 -d 172.16.3.28 -j ACCEPT
+
+# Accès SFTP vers BDD pour anonymisation
+# iptables -A FORWARD -p tcp --dport 22 -s 172.16.4.0/22 -d 172.16.20.2 -j ACCEPT
+
+# Accès Internet
+# iptables -A FORWARD -p tcp --dport 443 -s 172.16.4.0/22 -j ACCEPT

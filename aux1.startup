@@ -8,10 +8,12 @@ ip link set dev eth0 up
 ip route add default via 172.16.20.254
 
 # Configuration du server DNS
-echo 'nameserver 8.8.8.8' > /etc/resolv.conf
+echo 'nameserver 172.16.3.17' > /etc/resolv.conf
 
-# Configuration des règles iptables
-iptables -P INPUT DROP  
+# Politique par défaut
+# iptables -P INPUT DROP
+# iptables -P OUTPUT DROP
 
-iptables -A INPUT -p icmp -j ACCEPT  # Autoriser les pings pour la supervision
-iptables -A INPUT -j DROP
+# Autoriser SSH depuis le réseau DSI
+# iptables -A INPUT -p tcp --dport 22 -s 172.16.20.0/24 -j ACCEPT
+# iptables -A OUTPUT -p tcp --sport 22 -d 172.16.20.0/24 -j ACCEPT

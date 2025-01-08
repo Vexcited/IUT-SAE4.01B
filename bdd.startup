@@ -8,7 +8,7 @@ ip link set dev eth0 up
 ip route add default via 172.16.20.254
 
 # Configuration du server DNS
-echo 'nameserver 8.8.8.8' > /etc/resolv.conf
+echo 'nameserver 172.16.3.17' > /etc/resolv.conf
 
 # Mise à jour des packets
 apt-get update
@@ -23,9 +23,15 @@ systemctl start ssh
 useradd -m admin
 echo "admin:admin" | chpasswd
 
-# Configuration des règles iptables
-iptables -P INPUT DROP
 
-iptables -A INPUT -p tcp --dport 22 -s 172.16.4.0/22 -j ACCEPT  # Autoriser SFTP pour les chercheurs
-iptables -A INPUT -p icmp -j ACCEPT  # Autoriser les pings pour la supervision
-iptables -A INPUT -j DROP
+# Politique par défaut
+# iptables -P INPUT DROP
+# iptables -P OUTPUT DROP
+
+# Autoriser MySQL depuis S
+# iptables -A INPUT -p tcp --dport 3306 -s 172.16.3.28 -j ACCEPT
+# iptables -A OUTPUT -p tcp --sport 3306 -d 172.16.3.28 -j ACCEPT
+
+# Autoriser SFTP pour anonymisation (chercheurs)
+# iptables -A INPUT -p tcp --dport 22 -s 172.16.4.0/22 -j ACCEPT
+# iptables -A OUTPUT -p tcp --sport 22 -d 172.16.4.0/22 -j ACCEPT

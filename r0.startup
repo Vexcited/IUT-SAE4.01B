@@ -15,13 +15,24 @@ ip route add 172.16.3.16/28 via 10.0.0.7
 ip route add 172.16.20.0/24 via 10.0.0.8
 
 # Configuration du server DNS
-echo 'nameserver 8.8.8.8' > /etc/resolv.conf
+echo 'nameserver 172.16.3.17' > /etc/resolv.conf
 
-# Configuration des règles iptables
-iptables -P FORWARD DROP
 
-iptables -t nat -A POSTROUTING -o eth1 -j MASQUERADE  # NAT pour permettre l'accès Internet
-iptables -A FORWARD -i eth0 -o eth0 -j ACCEPT  # Autoriser le trafic interne entre sous-réseaux
-iptables -A FORWARD -i eth0 -o eth1 -j ACCEPT  # Autoriser le trafic sortant vers Internet
-iptables -A FORWARD -i eth1 -o eth0 -m state --state RELATED,ESTABLISHED -j ACCEPT  # Autoriser les réponses des connexions Internet
-iptables -A FORWARD -j DROP
+# Politique par défaut pour bloquer tout par défaut
+# iptables -P INPUT DROP
+# iptables -P FORWARD DROP
+# iptables -P OUTPUT ACCEPT
+
+# Permettre les connexions établies et liées
+# iptables -A FORWARD -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+
+# Résolution DNS vers le serveur DNS du CHU (depuis tous les sous-réseaux)
+# iptables -A FORWARD -p udp --dport 53 -s 172.16.0.0/16 -d 172.16.3.17 -j ACCEPT
+# iptables -A FORWARD -p udp --sport 53 -s 172.16.3.17 -d 172.16.0.0/16 -j ACCEPT
+
+# Accès Internet uniquement via HTTP/HTTPS par noms de domaine
+# iptables -A FORWARD -p tcp --dport 80 -j ACCEPT
+# iptables -A FORWARD -p tcp --dport 443 -j ACCEPT
+
+# Bloquer tout autre trafic
+# iptables -A FORWARD -j DROP
