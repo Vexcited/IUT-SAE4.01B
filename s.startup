@@ -30,7 +30,7 @@ echo "<VirtualHost *:80>
     DocumentRoot /var/www/intranet
 </VirtualHost>
 
-VirtualHost *:443>
+<VirtualHost *:443>
     ServerName sitepublic.chu
     DocumentRoot /var/www/public
     SSLEngine on
