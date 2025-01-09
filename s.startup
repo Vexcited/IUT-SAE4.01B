@@ -8,9 +8,9 @@ ip route add default via 172.16.3.30
 # Configuration du serveur DNS
 echo 'nameserver 172.16.3.17' > /etc/resolv.conf
 
-# Installation d'Apache2 pour héberger le site public + intranet
+# Mise à jour des paquets et installation des dépendances nécessaires
 apt-get update
-apt-get install -y apache2
+apt-get install -y apache2 ssl-cert openssl
 
 # Création des répertoires pour le site public
 mkdir -p /var/www/public
@@ -19,36 +19,44 @@ mkdir -p /var/www/intranet
 echo "<h1>Hello, vous êtes sur le site public du CHU</h1>" > /var/www/public/index.html
 echo "<h1>Hello, vous êtes sur l'Intranet du CHU</h1>" > /var/www/intranet/index.html
 
-# Configuration des Virtual Hosts pour Apache2
+# Génération d'un certificat SSL auto-signé
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+    -keyout /etc/ssl/private/apache-selfsigned.key \
+    -out /etc/ssl/certs/apache-selfsigned.crt \
+    -subj "/CN=sitepublic.chu"
+
+# Configuration des Virtual Hosts pour HTTP et HTTPS
 echo "<VirtualHost *:80>
     ServerName sitepublic.chu
     DocumentRoot /var/www/public
+    Redirect permanent / https://sitepublic.chu/
+</VirtualHost>
+
+<VirtualHost *:443>
+    ServerName sitepublic.chu
+    DocumentRoot /var/www/public
+    SSLEngine on
+    SSLCertificateFile /etc/ssl/certs/apache-selfsigned.crt
+    SSLCertificateKeyFile /etc/ssl/private/apache-selfsigned.key
 </VirtualHost>
 
 <VirtualHost *:80>
     ServerName intranet.chu
     DocumentRoot /var/www/intranet
-</VirtualHost>
-
-<VirtualHost *:443>
-    ServerName sitepublic.chu
-    DocumentRoot /var/www/public
-    SSLEngine on
-    SSLCertificateFile /etc/ssl/certs/ssl-cert-snakeoil.pem
-    SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key
+    Redirect permanent / https://intranet.chu/
 </VirtualHost>
 
 <VirtualHost *:443>
     ServerName intranet.chu
     DocumentRoot /var/www/intranet
     SSLEngine on
-    SSLCertificateFile /etc/ssl/certs/ssl-cert-snakeoil.pem
-    SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key
+    SSLCertificateFile /etc/ssl/certs/apache-selfsigned.crt
+    SSLCertificateKeyFile /etc/ssl/private/apache-selfsigned.key
 </VirtualHost>" > /etc/apache2/sites-available/000-default.conf
 
-# Redémarrer Apache pour appliquer les changements
-service apache2 restart
-
+# Activer le module SSL et redémarrer Apache
+a2enmod ssl
+systemctl restart apache2
 
 # Politique par défaut
 # iptables -P INPUT DROP
