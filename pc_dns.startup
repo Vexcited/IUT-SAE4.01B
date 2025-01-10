@@ -1,0 +1,19 @@
+#!/bin/bash
+# On copie les fichiers de configuration initial.
+cp /shared/pc_dns/interfaces /etc/network/interfaces
+
+# On redémarre le service réseau.
+/etc/init.d/networking restart
+
+# On bloque tout par défaut.
+iptables -P INPUT DROP
+iptables -P FORWARD DROP
+iptables -P OUTPUT DROP
+
+# Autoriser les requêtes DNS sur l'ensemble du réseau.
+iptables -A INPUT -s 172.16.0.0/19 -p udp --dport 53 -j ACCEPT
+iptables -A OUTPUT -d 172.16.0.0/19 -p udp --sport 53 -j ACCEPT
+
+# On auorise les pings sur l'ensemble du réseau.
+iptables -A INPUT -s 172.16.0.0/19 -p icmp -j ACCEPT
+iptables -A OUTPUT -d 172.16.0.0/19 -p icmp -j ACCEPT
