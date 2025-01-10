@@ -16,9 +16,9 @@
 - [x] Les chercheurs (`r_c`) et les enseignants-chercheurs (`r_ec`) doivent avoir accès à Internet, via `r_0`
 - [x] Les chercheurs (`r_c`) et les enseignants-chercheurs (`r_ec`) doivent avoir accès à `pc_bdd` en SFTP
 
-- [ ] Le personnel soignant (`r_ps`) doit avoir accès au `pc_mail` pour pouvoir accéder à leur boîte mail
-- [ ] Le personnel soignant (`r_ps`) doit avoir accès au `pc_s` pour pouvoir accéder au site web publique, interne et application de RDV (disponible sur `TCP/1224`)
-- [ ] Le personnel soignant (`r_ps`) doit avoir accès à Internet, via `r_0`
+- [x] Le personnel soignant (`r_ps`) doit avoir accès au `pc_mail` pour pouvoir accéder à leur boîte mail
+- [x] Le personnel soignant (`r_ps`) doit avoir accès au `pc_s` pour pouvoir accéder au site web publique, interne et application de RDV (disponible sur `TCP/1224`)
+- [x] Le personnel soignant (`r_ps`) doit avoir accès à Internet, via `r_0`
 
 - [ ] La comptabilité (`r_ct`) doit avoir accès au `pc_mail` pour pouvoir accéder à leur boîte mail
 - [ ] La comptabilité (`r_ct`) doit avoir accès au `pc_s` pour pouvoir accéder au site web publique et à l'application de gestion de RDV (disponible sur `TCP/1224`) pour le suivi financier
