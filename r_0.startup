@@ -1,0 +1,23 @@
+#!/bin/bash
+# On copie les fichiers de configuration initial.
+cp /shared/r_0/resolv.conf /etc/resolv.conf
+cp /shared/r_0/interfaces /etc/network/interfaces
+
+# On redémarre le service réseau.
+/etc/init.d/networking restart
+
+# On bloque tout par défaut.
+iptables -P INPUT DROP
+iptables -P FORWARD DROP
+iptables -P OUTPUT DROP
+
+# Accès HTTP.
+iptables -A FORWARD -p tcp --dport 80 -j ACCEPT
+iptables -A FORWARD -p tcp --sport 80 -j ACCEPT
+
+# Accès HTTPS.
+iptables -A FORWARD -p tcp --dport 443 -j ACCEPT
+iptables -A FORWARD -p tcp --sport 443 -j ACCEPT
+
+# Accès à Internet.
+iptables -t nat -A POSTROUTING -o eth1 -j MASQUERADE
