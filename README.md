@@ -1,11 +1,11 @@
-La résolution de nom est dirigié par le `pc_dns`, situé dans le réseau de `r_s`.
+- [x] La résolution de nom est dirigié par le `pc_dns`, situé dans le réseau de `r_s`.
 
 - [ ] Tous les accès à Internet se font exclusivement par nom de domaine et non par adresse IP (?)
 
 - [  ] Ping (ICMP) : `r_dsi` doit pouvoir faire des pings à toutes les machines dans l'infrastructure
 
-- [ ] Les patients (`r_p`) et visiteurs (`r_v`) doivent avoir accès au `pc_s` uniquement pour pouvoir accéder au site web publique
-- [ ] Les patients (`r_p`) et visiteurs (`r_v`) doivent avoir accès à Internet, via `r_0`
+- [x] Les patients (`r_p`) et visiteurs (`r_v`) doivent avoir accès au `pc_s` pour pouvoir accéder au site web publique
+- [x] Les patients (`r_p`) et visiteurs (`r_v`) doivent avoir accès à Internet, via `r_0`
 
 - [ ] Les étudiants (`r_etu`) et les enseignants (`r_ens`) doivent avoir accès au `pc_mail` pour pouvoir accéder à leur boîte mail
 - [ ] Les étudiants (`r_etu`) et les enseignants (`r_ens`) doivent avoir accès au `pc_s` pour pouvoir accéder au site web publique **et** interne
