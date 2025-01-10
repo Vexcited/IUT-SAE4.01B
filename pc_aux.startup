@@ -1,0 +1,20 @@
+#!/bin/bash
+# On copie les fichiers de configuration initial.
+cp /shared/resolv-to-pc_dns.conf /etc/resolv.conf
+cp /shared/pc_aux/interfaces /etc/network/interfaces
+
+# On redémarre le service réseau.
+/etc/init.d/networking restart
+
+# On bloque tout par défaut.
+iptables -P INPUT DROP
+iptables -P FORWARD DROP
+iptables -P OUTPUT DROP
+
+# PING (ICMP)
+iptables -A FORWARD -s 172.16.2.0/24 -p icmp -j ACCEPT
+iptables -A FORWARD -d 172.16.2.0/24 -p icmp -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+# DNS (53)
+iptables -A FORWARD -s 172.16.3.17 -p udp --sport 53 -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A FORWARD -d 172.16.3.17 -p udp --dport 53 -j ACCEPT
