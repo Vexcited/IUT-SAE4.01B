@@ -1,69 +1,36 @@
 #!/bin/bash
+# On copie les fichiers de configuration initial.
+cp /shared/resolv-to-pc_dns.conf /etc/resolv.conf
+cp /shared/pc_s/interfaces /etc/network/interfaces
 
-# Configuration des adresses ip et routes 
-ip address add 172.16.3.28/28 dev eth0
-ip link set dev eth0 up
-ip route add default via 172.16.3.30
+# On redémarre le service réseau.
+/etc/init.d/networking restart
 
-# Configuration du serveur DNS
-echo 'nameserver 172.16.3.17' > /etc/resolv.conf
+# On bloque tout par défaut.
+iptables -P INPUT DROP
+iptables -P FORWARD DROP
+iptables -P OUTPUT DROP
 
-# Mise à jour des paquets et installation des dépendances nécessaires
-apt-get update
-apt-get install -y apache2 ssl-cert openssl
+# PING (ICMP)
+iptables -A INPUT -s 172.16.2.0/24 -p icmp -j ACCEPT
+iptables -A OUTPUT -d 172.16.2.0/24 -p icmp -m state --state ESTABLISHED,RELATED -j ACCEPT
 
-# Création des répertoires pour le site public
-mkdir -p /var/www/public
-mkdir -p /var/www/intranet
+# HTTP (80)
+iptables -A INPUT -p tcp --dport 80 -j ACCEPT
+iptables -A OUTPUT -p tcp --sport 80 -j ACCEPT
 
-echo "<h1>Hello, vous êtes sur le site public du CHU</h1>" > /var/www/public/index.html
-echo "<h1>Hello, vous êtes sur l'Intranet du CHU</h1>" > /var/www/intranet/index.html
+# HTTPS (443)
+iptables -A INPUT -p tcp --dport 443 -j ACCEPT
+iptables -A OUTPUT -p tcp --sport 443 -j ACCEPT
 
-# Génération d'un certificat SSL auto-signé
-openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
-    -keyout /etc/ssl/private/apache-selfsigned.key \
-    -out /etc/ssl/certs/apache-selfsigned.crt \
-    -subj "/CN=sitepublic.chu"
+# INTERNAL SERVER RDV (1224) pour personnel soignants (PS)
+iptables -A INPUT -s 172.16.20.0/22 -p tcp --dport 1224 -j ACCEPT
+iptables -A OUTPUT -d 172.16.20.0/22 -p tcp --sport 1224 -m state --state ESTABLISHED,RELATED -j ACCEPT
 
-# Configuration des Virtual Hosts pour HTTP et HTTPS
-echo "<VirtualHost *:80>
-    ServerName sitepublic.chu
-    DocumentRoot /var/www/public
-    Redirect permanent / https://sitepublic.chu/
-</VirtualHost>
+# INTERNAL SERVER RDV (1224) pour comptabilité (CT)
+iptables -A INPUT -s 172.16.1.0/24 -p tcp --dport 1224 -j ACCEPT
+iptables -A OUTPUT -d 172.16.1.0/24 -p tcp --sport 1224 -m state --state ESTABLISHED,RELATED -j ACCEPT
 
-<VirtualHost *:443>
-    ServerName sitepublic.chu
-    DocumentRoot /var/www/public
-    SSLEngine on
-    SSLCertificateFile /etc/ssl/certs/apache-selfsigned.crt
-    SSLCertificateKeyFile /etc/ssl/private/apache-selfsigned.key
-</VirtualHost>
-
-<VirtualHost *:80>
-    ServerName intranet.chu
-    DocumentRoot /var/www/intranet
-    Redirect permanent / https://intranet.chu/
-</VirtualHost>
-
-<VirtualHost *:443>
-    ServerName intranet.chu
-    DocumentRoot /var/www/intranet
-    SSLEngine on
-    SSLCertificateFile /etc/ssl/certs/apache-selfsigned.crt
-    SSLCertificateKeyFile /etc/ssl/private/apache-selfsigned.key
-</VirtualHost>" > /etc/apache2/sites-available/000-default.conf
-
-# Activer le module SSL et redémarrer Apache
-a2enmod ssl
-systemctl restart apache2
-
-# Politique par défaut
-# iptables -P INPUT DROP
-# iptables -P OUTPUT DROP
-
-# Autoriser HTTP et HTTPS
-# iptables -A INPUT -p tcp --dport 80 -j ACCEPT
-# iptables -A INPUT -p tcp --dport 443 -j ACCEPT
-# iptables -A OUTPUT -p tcp --sport 80 -j ACCEPT
-# iptables -A OUTPUT -p tcp --sport 443 -j ACCEPT
+# MySQL (3306)
+iptables -A INPUT -s 172.16.2.2 -p tcp --sport 3306 -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A OUTPUT -d 172.16.2.2 -p tcp --dport 3306 -j ACCEPT

@@ -11,12 +11,14 @@ iptables -P INPUT DROP
 iptables -P FORWARD DROP
 iptables -P OUTPUT DROP
 
-# On autorise r_c et r_ec pour SFTP
+# SFTP (22) pour chercheurs (RC)
 iptables -A INPUT -s 172.16.8.0/22 -p tcp --dport 22 -j ACCEPT
-iptables -A INPUT -s 172.16.12.0/22 -p tcp --dport 22 -j ACCEPT
 iptables -A OUTPUT -d 172.16.8.0/22 -p tcp --sport 22 -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+# SFTP (22) pour enseignant-chercheurs (EC)
+iptables -A INPUT -s 172.16.12.0/22 -p tcp --dport 22 -j ACCEPT
 iptables -A OUTPUT -d 172.16.12.0/22 -p tcp --sport 22 -m state --state ESTABLISHED,RELATED -j ACCEPT
 
-# On autorise pc_s pour la BDD
+# MySQL (3306) pour application (PC_S)
 iptables -A INPUT -s 172.16.3.28 -p tcp --dport 3306 -j ACCEPT
 iptables -A OUTPUT -d 172.16.3.28 -p tcp --sport 3306 -m state --state ESTABLISHED,RELATED -j ACCEPT
