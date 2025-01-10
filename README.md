@@ -20,9 +20,9 @@
 - [x] Le personnel soignant (`r_ps`) doit avoir accès au `pc_s` pour pouvoir accéder au site web publique, interne et application de RDV (disponible sur `TCP/1224`)
 - [x] Le personnel soignant (`r_ps`) doit avoir accès à Internet, via `r_0`
 
-- [ ] La comptabilité (`r_ct`) doit avoir accès au `pc_mail` pour pouvoir accéder à leur boîte mail
-- [ ] La comptabilité (`r_ct`) doit avoir accès au `pc_s` pour pouvoir accéder au site web publique et à l'application de gestion de RDV (disponible sur `TCP/1224`) pour le suivi financier
-- [ ] La comptabilité (`r_ct`) doit avoir accès à Internet, via `r_0`
+- [x] La comptabilité (`r_ct`) doit avoir accès au `pc_mail` pour pouvoir accéder à leur boîte mail
+- [x] La comptabilité (`r_ct`) doit avoir accès au `pc_s` pour pouvoir accéder au site web publique et à l'application de gestion de RDV (disponible sur `TCP/1224`) pour le suivi financier
+- [x] La comptabilité (`r_ct`) doit avoir accès à Internet, via `r_0`
 
 - [ ] La DSI (`r_dsi`) (sauf `pc_bdd`) doit avoir accès à tout les services, machines et Internet
 - [ ] Le RSSI (`pc_rssi`) doit pouvoir accéder à tout les services, machines (y compris `pc_bdd`) et Internet
