@@ -1,6 +1,8 @@
-- [x] La résolution de nom est dirigié par le `pc_dns`, situé dans le réseau de `r_s`.
+# SAE3.01B
 
-- [ ] Tous les accès à Internet se font exclusivement par nom de domaine et non par adresse IP (?)
+## Régles de pare-feu
+
+- [x] La résolution de nom est dirigié par le `pc_dns`, situé dans le réseau de `r_s`.
 
 - [x] Ping (ICMP) : `r_dsi` doit pouvoir faire des pings à toutes les machines dans l'infrastructure
 
@@ -25,4 +27,12 @@
 - [x] La comptabilité (`r_ct`) doit avoir accès à Internet, via `r_0`
 
 - [x] La DSI (`r_dsi`) (sauf `pc_bdd`) doit avoir accès à tout les services, machines et Internet
-- [ ] Le RSSI (`pc_rssi`) doit pouvoir accéder à tout les services, machines (y compris `pc_bdd`) et Internet
+- [x] Le RSSI (`pc_rssi`) doit pouvoir accéder à tout les services, machines (y compris `pc_bdd`) et Internet
+
+## Tester les règles de pare-feu
+
+Sur chaque machine, exécuter la commande suivante :
+
+```bash
+chmod +x /shared/testing/test.sh && /shared/testing/test.sh
+```
