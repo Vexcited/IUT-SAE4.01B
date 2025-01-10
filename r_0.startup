@@ -11,13 +11,12 @@ iptables -P INPUT DROP
 iptables -P FORWARD DROP
 iptables -P OUTPUT DROP
 
-# Accès HTTP.
+# HTTP (80)
 iptables -A FORWARD -p tcp --dport 80 -j ACCEPT
 iptables -A FORWARD -p tcp --sport 80 -j ACCEPT
 
-# Accès HTTPS.
+# HTTPS (443)
 iptables -A FORWARD -p tcp --dport 443 -j ACCEPT
 iptables -A FORWARD -p tcp --sport 443 -j ACCEPT
 
-# Accès à Internet.
 iptables -t nat -A POSTROUTING -o eth1 -j MASQUERADE

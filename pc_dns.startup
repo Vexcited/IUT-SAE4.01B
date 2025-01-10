@@ -10,10 +10,10 @@ iptables -P INPUT DROP
 iptables -P FORWARD DROP
 iptables -P OUTPUT DROP
 
-# On autorise le DNS sur l'ensemble du réseau.
-iptables -A INPUT -s 172.16.0.0/19 -p udp --dport 53 -j ACCEPT
-iptables -A OUTPUT -d 172.16.0.0/19 -p udp --sport 53 -j ACCEPT
+# DNS (53)
+iptables -A INPUT -p udp --dport 53 -j ACCEPT
+iptables -A OUTPUT -p udp --sport 53 -j ACCEPT
 
-# On autorise les pings sur l'ensemble du réseau.
-iptables -A INPUT -s 172.16.0.0/19 -p icmp -j ACCEPT
-iptables -A OUTPUT -d 172.16.0.0/19 -p icmp -j ACCEPT
+# PING (ICMP)
+iptables -A INPUT -p icmp -j ACCEPT
+iptables -A OUTPUT -p icmp -j ACCEPT

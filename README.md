@@ -7,9 +7,9 @@
 - [x] Les patients (`r_p`) et visiteurs (`r_v`) doivent avoir accès au `pc_s` pour pouvoir accéder au site web publique
 - [x] Les patients (`r_p`) et visiteurs (`r_v`) doivent avoir accès à Internet, via `r_0`
 
-- [ ] Les étudiants (`r_etu`) et les enseignants (`r_ens`) doivent avoir accès au `pc_mail` pour pouvoir accéder à leur boîte mail
-- [ ] Les étudiants (`r_etu`) et les enseignants (`r_ens`) doivent avoir accès au `pc_s` pour pouvoir accéder au site web publique **et** interne
-- [ ] Les étudiants (`r_etu`) et les enseignants (`r_ens`) doivent avoir accès à Internet, via `r_0`
+- [x] Les étudiants (`r_etu`) et les enseignants (`r_ens`) doivent avoir accès au `pc_mail` pour pouvoir accéder à leur boîte mail
+- [x] Les étudiants (`r_etu`) et les enseignants (`r_ens`) doivent avoir accès au `pc_s` pour pouvoir accéder au site web publique **et** interne
+- [x] Les étudiants (`r_etu`) et les enseignants (`r_ens`) doivent avoir accès à Internet, via `r_0`
 
 - [ ] Les chercheurs (`r_c`) et les enseignants-chercheurs (`r_ec`) doivent avoir accès au `pc_mail` pour pouvoir accéder à leur boîte mail
 - [ ] Les chercheurs (`r_c`) et les enseignants-chercheurs (`r_ec`) doivent avoir accès au `pc_s` pour pouvoir accéder au site web publique **et** interne
