@@ -2,7 +2,7 @@
 
 - [ ] Tous les accès à Internet se font exclusivement par nom de domaine et non par adresse IP (?)
 
-- [  ] Ping (ICMP) : `r_dsi` doit pouvoir faire des pings à toutes les machines dans l'infrastructure
+- [x] Ping (ICMP) : `r_dsi` doit pouvoir faire des pings à toutes les machines dans l'infrastructure
 
 - [x] Les patients (`r_p`) et visiteurs (`r_v`) doivent avoir accès au `pc_s` pour pouvoir accéder au site web publique
 - [x] Les patients (`r_p`) et visiteurs (`r_v`) doivent avoir accès à Internet, via `r_0`
