@@ -12,55 +12,48 @@ iptables -P FORWARD DROP
 iptables -P OUTPUT DROP
 
 # PING (ICMP)
-iptables -A FORWARD -s 172.16.2.0/24 -p icmp -j ACCEPT
-iptables -A FORWARD -d 172.16.2.0/24 -p icmp -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A INPUT -s 172.16.2.0/24 -p icmp -j ACCEPT
+iptables -A OUTPUT -d 172.16.2.0/24 -p icmp -m state --state ESTABLISHED,RELATED -j ACCEPT
 
 # DNS (53)
-iptables -A FORWARD -s 172.16.3.17 -p udp --sport 53 -m state --state ESTABLISHED,RELATED -j ACCEPT
-iptables -A FORWARD -d 172.16.3.17 -p udp --dport 53 -j ACCEPT
+iptables -A INPUT -s 172.16.3.17 -p udp --sport 53 -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A OUTPUT -d 172.16.3.17 -p udp --dport 53 -j ACCEPT
 
 # HTTP (80)
-iptables -A FORWARD -p tcp --dport 80 -j ACCEPT
-iptables -A FORWARD -p tcp --sport 80 -j ACCEPT
+iptables -A INPUT -p tcp --dport 80 -j ACCEPT
+iptables -A OUTPUT -p tcp --sport 80 -j ACCEPT
 
 # HTTPS (443)
-iptables -A FORWARD -p tcp --dport 443 -j ACCEPT
-iptables -A FORWARD -p tcp --sport 443 -j ACCEPT
+iptables -A INPUT -p tcp --dport 443 -j ACCEPT
+iptables -A OUTPUT -p tcp --sport 443 -j ACCEPT
 
 # INTERNAL SERVER RDV (1224)
-iptables -A FORWARD -d 172.16.3.28 -p tcp --dport 1224 -j ACCEPT
-iptables -A FORWARD -s 172.16.3.28 -p tcp --sport 1224 -j ACCEPT
+iptables -A INPUT -d 172.16.3.28 -p tcp --dport 1224 -j ACCEPT
+iptables -A OUTPUT -s 172.16.3.28 -p tcp --sport 1224 -m state --state ESTABLISHED,RELATED -j ACCEPT
 
-# SMTP (25)
-iptables -A FORWARD -d 172.16.2.3 -p tcp --dport 25 -m state --state NEW,ESTABLISHED -j ACCEPT
-iptables -A FORWARD -s 172.16.2.3 -p tcp --sport 25 -m state --state ESTABLISHED -j ACCEPT
-iptables -A FORWARD -s 172.16.2.3 -p tcp --dport 25 -m state --state NEW,ESTABLISHED -j ACCEPT
-iptables -A FORWARD -d 172.16.2.3 -p tcp --sport 25 -m state --state ESTABLISHED -j ACCEPT
+# => SMTP
+iptables -A INPUT -p tcp -d 172.16.2.3 --dport 25 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A OUTPUT -p tcp -d 172.16.2.3 --dport 25 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A OUTPUT -p tcp -s 172.16.2.3 --sport 25 -m state --state ESTABLISHED -j ACCEPT
+# => SMTPS (TLS)
+iptables -A INPUT -p tcp -d 172.16.2.3 --dport 587 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A OUTPUT -p tcp -d 172.16.2.3 --dport 587 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A OUTPUT -p tcp -s 172.16.2.3 --sport 587 -m state --state ESTABLISHED -j ACCEPT
+# => SMTPS (SMTP over SSL, déprécié mais toujours utilisé)
+iptables -A INPUT -p tcp -d 172.16.2.3 --dport 465 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A OUTPUT -p tcp -d 172.16.2.3 --dport 465 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A OUTPUT -p tcp -s 172.16.2.3 --sport 465 -m state --state ESTABLISHED -j ACCEPT
 
-# SUBMISSION (587)
-iptables -A FORWARD -d 172.16.2.3 -p tcp --dport 587 -m state --state NEW,ESTABLISHED -j ACCEPT
-iptables -A FORWARD -s 172.16.2.3 -p tcp --sport 587 -m state --state ESTABLISHED -j ACCEPT
-iptables -A FORWARD -s 172.16.2.3 -p tcp --dport 587 -m state --state NEW,ESTABLISHED -j ACCEPT
-iptables -A FORWARD -d 172.16.2.3 -p tcp --sport 587 -m state --state ESTABLISHED -j ACCEPT
+# => IMAP
+iptables -A INPUT -p tcp -d 172.16.2.3 --dport 143 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A OUTPUT -p tcp -s 172.16.2.3 --sport 143 -m state --state ESTABLISHED -j ACCEPT
+# => IMAP (TLS)
+iptables -A INPUT -p tcp -d 172.16.2.3 --dport 993 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A OUTPUT -p tcp -s 172.16.2.3 --sport 993 -m state --state ESTABLISHED -j ACCEPT
 
-# SMTPS (465)
-iptables -A FORWARD -d 172.16.2.3 -p tcp --dport 465 -m state --state NEW,ESTABLISHED -j ACCEPT
-iptables -A FORWARD -s 172.16.2.3 -p tcp --sport 465 -m state --state ESTABLISHED -j ACCEPT
-iptables -A FORWARD -s 172.16.2.3 -p tcp --dport 465 -m state --state NEW,ESTABLISHED -j ACCEPT
-iptables -A FORWARD -d 172.16.2.3 -p tcp --sport 465 -m state --state ESTABLISHED -j ACCEPT
-
-# IMAP (143)
-iptables -A FORWARD -d 172.16.2.3 -p tcp --dport 143 -m state --state NEW,ESTABLISHED -j ACCEPT
-iptables -A FORWARD -s 172.16.2.3 -p tcp --sport 143 -m state --state ESTABLISHED -j ACCEPT
-
-# IMAPS (993)
-iptables -A FORWARD -d 172.16.2.3 -p tcp --dport 993 -m state --state NEW,ESTABLISHED -j ACCEPT
-iptables -A FORWARD -s 172.16.2.3 -p tcp --sport 993 -m state --state ESTABLISHED -j ACCEPT
-
-# POP3 (110)
-iptables -A FORWARD -d 172.16.2.3 -p tcp --dport 110 -m state --state NEW,ESTABLISHED -j ACCEPT
-iptables -A FORWARD -s 172.16.2.3 -p tcp --sport 110 -m state --state ESTABLISHED -j ACCEPT
-
-# POP3S (995)
-iptables -A FORWARD -d 172.16.2.3 -p tcp --dport 995 -m state --state NEW,ESTABLISHED -j ACCEPT
-iptables -A FORWARD -s 172.16.2.3 -p tcp --sport 995 -m state --state ESTABLISHED -j ACCEPT
+# => POP3
+iptables -A INPUT -p tcp -d 172.16.2.3 --dport 110 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A OUTPUT -p tcp -s 172.16.2.3 --sport 110 -m state --state ESTABLISHED -j ACCEPT
+# => POP3 (TLS)
+iptables -A INPUT -p tcp -d 172.16.2.3 --dport 995 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A OUTPUT -p tcp -s 172.16.2.3 --sport 995 -m state --state ESTABLISHED -j ACCEPT

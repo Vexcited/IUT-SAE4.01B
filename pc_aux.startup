@@ -12,9 +12,9 @@ iptables -P FORWARD DROP
 iptables -P OUTPUT DROP
 
 # PING (ICMP)
-iptables -A FORWARD -s 172.16.2.0/24 -p icmp -j ACCEPT
-iptables -A FORWARD -d 172.16.2.0/24 -p icmp -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A INPUT -s 172.16.2.0/24 -p icmp -j ACCEPT
+iptables -A OUTPUT -d 172.16.2.0/24 -p icmp -m state --state ESTABLISHED,RELATED -j ACCEPT
 
 # DNS (53)
-iptables -A FORWARD -s 172.16.3.17 -p udp --sport 53 -m state --state ESTABLISHED,RELATED -j ACCEPT
-iptables -A FORWARD -d 172.16.3.17 -p udp --dport 53 -j ACCEPT
+iptables -A INPUT -s 172.16.3.17 -p udp --sport 53 -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A OUTPUT -d 172.16.3.17 -p udp --dport 53 -j ACCEPT
