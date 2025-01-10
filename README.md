@@ -24,5 +24,5 @@
 - [x] La comptabilité (`r_ct`) doit avoir accès au `pc_s` pour pouvoir accéder au site web publique et à l'application de gestion de RDV (disponible sur `TCP/1224`) pour le suivi financier
 - [x] La comptabilité (`r_ct`) doit avoir accès à Internet, via `r_0`
 
-- [ ] La DSI (`r_dsi`) (sauf `pc_bdd`) doit avoir accès à tout les services, machines et Internet
+- [x] La DSI (`r_dsi`) (sauf `pc_bdd`) doit avoir accès à tout les services, machines et Internet
 - [ ] Le RSSI (`pc_rssi`) doit pouvoir accéder à tout les services, machines (y compris `pc_bdd`) et Internet
