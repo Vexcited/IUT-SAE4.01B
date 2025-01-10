@@ -1,6 +1,6 @@
 #!/bin/bash
 # On copie les fichiers de configuration initial.
-cp /shared/r_0/resolv.conf /etc/resolv.conf
+cp /shared/resolv-to-quad9.conf /etc/resolv.conf
 cp /shared/r_0/interfaces /etc/network/interfaces
 
 # On redémarre le service réseau.
