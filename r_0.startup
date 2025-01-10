@@ -6,10 +6,9 @@ cp /shared/r_0/interfaces /etc/network/interfaces
 # On redémarre le service réseau.
 /etc/init.d/networking restart
 
-# On bloque tout par défaut.
-iptables -P INPUT DROP
 iptables -P FORWARD DROP
 iptables -P OUTPUT DROP
+iptables -P INPUT DROP
 
 # HTTP (80)
 iptables -A FORWARD -p tcp --dport 80 -j ACCEPT

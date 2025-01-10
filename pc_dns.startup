@@ -5,15 +5,16 @@ cp /shared/pc_dns/interfaces /etc/network/interfaces
 # On redémarre le service réseau.
 /etc/init.d/networking restart
 
-# On bloque tout par défaut.
-iptables -P INPUT DROP
 iptables -P FORWARD DROP
 iptables -P OUTPUT DROP
+iptables -P INPUT DROP
+
+# PING (ICMP) pour DSI
+iptables -A INPUT -s 172.16.2.0/24 -p icmp -j ACCEPT
+iptables -A OUTPUT -d 172.16.2.0/24 -p icmp -j ACCEPT
 
 # DNS (53)
 iptables -A INPUT -p udp --dport 53 -j ACCEPT
 iptables -A OUTPUT -p udp --sport 53 -j ACCEPT
 
-# PING (ICMP)
-iptables -A INPUT -p icmp -j ACCEPT
-iptables -A OUTPUT -p icmp -j ACCEPT
+nohup bash -c 'while true; do nc -lnup 53; done' &

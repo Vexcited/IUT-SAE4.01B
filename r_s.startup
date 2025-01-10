@@ -6,7 +6,6 @@ cp /shared/r_s/interfaces /etc/network/interfaces
 # On redémarre le service réseau.
 /etc/init.d/networking restart
 
-# On accepte tout !
-iptables -P INPUT ACCEPT
+iptables -P INPUT DROP
 iptables -P FORWARD ACCEPT
-iptables -P OUTPUT ACCEPT
+iptables -P OUTPUT DROP
