@@ -26,6 +26,10 @@ iptables -A OUTPUT -p tcp --sport 80 -j ACCEPT
 iptables -A INPUT -p tcp --dport 443 -j ACCEPT
 iptables -A OUTPUT -p tcp --sport 443 -j ACCEPT
 
+# SSH (22) - Remote management from DSI network
+iptables -A INPUT -s 172.16.2.0/24 -p tcp --dport 22 -j ACCEPT
+iptables -A OUTPUT -d 172.16.2.0/24 -p tcp --sport 22 -j ACCEPT
+
 # INTERNAL SERVER RDV (1224) pour personnel soignants (PS)
 iptables -A INPUT -s 172.16.20.0/22 -p tcp --dport 1224 -j ACCEPT
 iptables -A OUTPUT -d 172.16.20.0/22 -p tcp --sport 1224 -j ACCEPT
@@ -45,3 +49,4 @@ iptables -A OUTPUT -d 172.16.2.2 -p tcp --dport 3306 -j ACCEPT
 nohup bash -c 'while true; do nc -lnp 80; done' &
 nohup bash -c 'while true; do nc -lnp 443; done' &
 nohup bash -c 'while true; do nc -lnp 1224; done' &
+nohup bash -c 'while true; do nc -lnp 22; done' &

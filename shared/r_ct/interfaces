@@ -2,7 +2,13 @@ auto eth0
 iface eth0 inet static
 address 172.16.3.40
 netmask 255.255.255.224
-gateway 172.16.3.62
+gateway 172.16.3.45  # r low
+metric 50
+
+# r mid
+post-up ip route add default via 172.16.3.44 dev eth0 metric 100
+# r high
+post-up ip route add default via 172.16.3.43 dev eth0 metric 150
 
 auto eth1
 iface eth1 inet static
