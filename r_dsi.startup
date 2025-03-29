@@ -1,11 +1,82 @@
 #!/bin/bash
-# On copie les fichiers de configuration initial.
 cp /shared/resolv-to-pc_dns.conf /etc/resolv.conf
 cp /shared/r_dsi/interfaces /etc/network/interfaces
-
-# On redémarre le service réseau.
 /etc/init.d/networking restart
 
-iptables -P INPUT DROP
-iptables -P FORWARD ACCEPT
+# ------------------------------------------------------------------------------
+
+THIS_NET="172.16.2.0/24"
+RCT_NET="172.16.1.0/24"
+RPS_NET="172.16.20.0/22"
+RC_NET="172.16.8.0/22"
+REC_NET="172.16.12.0/22"
+RENS_NET="172.16.4.0/22"
+RETU_NET="172.16.16.0/22"
+
+MAIL_SERVER="172.16.2.3"
+DNS_SERVER="172.16.3.17"
+DB_SERVER="172.16.2.2"
+S_SERVER="172.16.3.28"
+
+# ------------------------------------------------------------------------------
+
+iptables -P FORWARD DROP
 iptables -P OUTPUT DROP
+iptables -P INPUT DROP
+
+# ------------------------------------------------------------------------------
+
+# Allow established and related connections
+iptables -A FORWARD -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+
+# ------------------------------------------------------------------------------
+
+# PING (ICMP)
+iptables -A FORWARD -s $THIS_NET -p icmp --icmp-type echo-request -j ACCEPT
+iptables -A FORWARD -s $THIS_NET -p icmp --icmp-type echo-reply -j ACCEPT
+
+# DNS
+iptables -A FORWARD -s $THIS_NET -d $DNS_SERVER -p udp --dport 53 -j ACCEPT
+
+# ------------------------------------------------------------------------------
+
+# HTTP
+iptables -A FORWARD -s $THIS_NET -d $S_SERVER -p tcp --dport 80 -j ACCEPT
+
+# HTTPS
+iptables -A FORWARD -s $THIS_NET -d $S_SERVER -p tcp --dport 443 -j ACCEPT
+
+# Internal HTTP
+iptables -A FORWARD -s $THIS_NET -d $S_SERVER -p tcp --dport 1224 -j ACCEPT
+
+# ------------------------------------------------------------------------------
+
+for net in $THIS_NET $RCT_NET $RPS_NET $RC_NET $REC_NET $RENS_NET $RETU_NET
+do
+  # SMTP
+  iptables -A FORWARD -s $net -d $MAIL_SERVER -p tcp --dport 25 -j ACCEPT
+
+  # SUBMISSION
+  iptables -A FORWARD -s $net -d $MAIL_SERVER -p tcp --dport 587 -j ACCEPT
+
+  # SMTPS
+  iptables -A FORWARD -s $net -d $MAIL_SERVER -p tcp --dport 465 -j ACCEPT
+
+  # IMAP
+  iptables -A FORWARD -s $net -d $MAIL_SERVER -p tcp --dport 143 -j ACCEPT
+
+  # IMAPS
+  iptables -A FORWARD -s $net -d $MAIL_SERVER -p tcp --dport 993 -j ACCEPT
+
+  # POP3
+  iptables -A FORWARD -s $net -d $MAIL_SERVER -p tcp --dport 110 -j ACCEPT
+
+  # POP3S
+  iptables -A FORWARD -s $net -d $MAIL_SERVER -p tcp --dport 995 -j ACCEPT
+done
+
+# ------------------------------------------------------------------------------
+
+# MySQL
+iptables -A FORWARD -s $THIS_NET -d $DB_SERVER -p tcp --dport 3306 -j ACCEPT
+iptables -A FORWARD -s $S_SERVER -d $DB_SERVER -p tcp --dport 3306 -j ACCEPT

@@ -7,8 +7,12 @@ cp /shared/r_s/interfaces /etc/network/interfaces
 # ------------------------------------------------------------------------------
 
 THIS_NET="172.16.3.16/28"
-INTERNAL_NET="172.16.3.32/27"
+RCT_NET="172.16.1.0/24"
+RPS_NET="172.16.20.0/22"
 DSI_NET="172.16.2.0/24"
+
+DNS_SERVER="172.16.3.17"
+DB_SERVER="172.16.2.2"
 
 # ------------------------------------------------------------------------------
 
@@ -36,13 +40,16 @@ iptables -A FORWARD -s $THIS_NET -d $DNS_SERVER -p udp --dport 53 -j ACCEPT
 iptables -A FORWARD -p tcp --dport 80 -j ACCEPT
 
 # Internal HTTP
-iptables -A FORWARD -s $INTERNAL_NET -p tcp --dport 1224 -j ACCEPT
+iptables -A FORWARD -s $RCT_NET -p tcp --dport 1224 -j ACCEPT
+iptables -A FORWARD -s $RPS_NET -p tcp --dport 1224 -j ACCEPT
+iptables -A FORWARD -s $DSI_NET -p tcp --dport 1224 -j ACCEPT
 
 # HTTPS
 iptables -A FORWARD -p tcp --dport 443 -j ACCEPT
 
 # MySQL
-iptables -A FORWARD -s $THIS_NET -p tcp --dport 3306 -j ACCEPT
+iptables -A FORWARD -s $THIS_NET -d $DB_SERVER -p tcp --dport 3306 -j ACCEPT
+iptables -A FORWARD -s $THIS_NET -d $DB_SERVER -p tcp --dport 3306 -j ACCEPT
 
 # ------------------------------------------------------------------------------
 

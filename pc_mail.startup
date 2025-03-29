@@ -1,60 +1,12 @@
 #!/bin/bash
-# On copie les fichiers de configuration initial.
+
 cp /shared/resolv-to-pc_dns.conf /etc/resolv.conf
 cp /shared/pc_mail/interfaces /etc/network/interfaces
-
-# On redémarre le service réseau.
 /etc/init.d/networking restart
 
-iptables -P FORWARD DROP
-iptables -P OUTPUT DROP
-iptables -P INPUT DROP
-
-# PING (ICMP) pour DSI
-iptables -A INPUT -s 172.16.2.0/24 -p icmp -j ACCEPT
-iptables -A OUTPUT -d 172.16.2.0/24 -p icmp -j ACCEPT
-
-# DNS (53)
-iptables -A INPUT -s 172.16.3.17 -p udp --sport 53 -j ACCEPT
-iptables -A OUTPUT -d 172.16.3.17 -p udp --dport 53 -j ACCEPT
-
-# Pour plus d'information sur les ports ci-dessous, voir :
-# https://www.cloudflare.com/learning/email-security/smtp-port-25-587/
-
-# => SMTP
-iptables -A INPUT -p tcp --dport 25 -j ACCEPT
-iptables -A OUTPUT -p tcp --dport 25 -j ACCEPT
-iptables -A OUTPUT -p tcp --sport 25 -j ACCEPT
-
-# => SMTPS (TLS)
-iptables -A INPUT -p tcp --dport 587 -j ACCEPT
-iptables -A OUTPUT -p tcp --dport 587 -j ACCEPT
-iptables -A OUTPUT -p tcp --sport 587 -j ACCEPT
-
-# => SMTPS (SMTP over SSL, déprécié mais toujours utilisé)
-iptables -A INPUT -p tcp --dport 465 -j ACCEPT
-iptables -A OUTPUT -p tcp --dport 465 -j ACCEPT
-iptables -A OUTPUT -p tcp --sport 465 -j ACCEPT
-
-# => IMAP
-iptables -A INPUT -p tcp --dport 143 -j ACCEPT
-iptables -A OUTPUT -p tcp --sport 143 -j ACCEPT
-
-# => IMAP (TLS)
-iptables -A INPUT -p tcp --dport 993 -j ACCEPT
-iptables -A OUTPUT -p tcp --sport 993 -j ACCEPT
-
-# => POP3
-iptables -A INPUT -p tcp --dport 110 -j ACCEPT
-iptables -A OUTPUT -p tcp --sport 110 -j ACCEPT
-
-# => POP3 (TLS)
-iptables -A INPUT -p tcp --dport 995 -j ACCEPT
-iptables -A OUTPUT -p tcp --sport 995 -j ACCEPT
-
 nohup bash -c 'while true; do nc -lnp 25; done' &
-nohup bash -c 'while true; do nc -lnp 587; done' &
 nohup bash -c 'while true; do nc -lnp 465; done' &
+nohup bash -c 'while true; do nc -lnp 587; done' &
 nohup bash -c 'while true; do nc -lnp 143; done' &
 nohup bash -c 'while true; do nc -lnp 993; done' &
 nohup bash -c 'while true; do nc -lnp 110; done' &

@@ -11,6 +11,7 @@ THIS_NET="172.16.16.0/22"
 DNS_SERVER="172.16.3.17"
 WEB_SERVER="172.16.3.28"
 MAIL_SERVER="172.16.2.3"
+DSI_NET="172.16.2.0/24"
 
 # ------------------------------------------------------------------------------
 
@@ -26,8 +27,8 @@ iptables -A FORWARD -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
 # ------------------------------------------------------------------------------
 
 # PING (ICMP)
-iptables -A FORWARD -s $THIS_NET -p icmp --icmp-type echo-request -j ACCEPT
-iptables -A FORWARD -s $THIS_NET -p icmp --icmp-type echo-reply -j ACCEPT
+iptables -A FORWARD -s $DSI_NET -p icmp --icmp-type echo-request -j ACCEPT
+iptables -A FORWARD -s $DSI_NET -p icmp --icmp-type echo-reply -j ACCEPT
 
 # DNS
 iptables -A FORWARD -s $THIS_NET -d $DNS_SERVER -p udp --dport 53 -j ACCEPT

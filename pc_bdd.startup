@@ -1,42 +1,8 @@
 #!/bin/bash
-# On copie les fichiers de configuration initial.
+
 cp /shared/resolv-to-pc_dns.conf /etc/resolv.conf
 cp /shared/pc_bdd/interfaces /etc/network/interfaces
-
-# On redémarre le service réseau.
 /etc/init.d/networking restart
-
-iptables -P FORWARD DROP
-iptables -P OUTPUT DROP
-iptables -P INPUT DROP
-
-# PING (ICMP) pour DSI
-iptables -A INPUT -s 172.16.2.0/24 -p icmp -j ACCEPT
-iptables -A OUTPUT -d 172.16.2.0/24 -p icmp -j ACCEPT
-
-# DNS (53)
-iptables -A INPUT -s 172.16.3.17 -p udp --sport 53 -j ACCEPT
-iptables -A OUTPUT -d 172.16.3.17 -p udp --dport 53 -j ACCEPT
-
-# SFTP (22) pour chercheurs (RC)
-iptables -A INPUT -s 172.16.8.0/22 -p tcp --dport 22 -j ACCEPT
-iptables -A OUTPUT -d 172.16.8.0/22 -p tcp --sport 22 -j ACCEPT
-
-# SFTP (22) pour enseignant-chercheurs (EC)
-iptables -A INPUT -s 172.16.12.0/22 -p tcp --dport 22 -j ACCEPT
-iptables -A OUTPUT -d 172.16.12.0/22 -p tcp --sport 22 -j ACCEPT
-
-# SFTP (22) pour DSI
-iptables -A INPUT -s 172.16.2.0/22 -p tcp --dport 22 -j ACCEPT
-iptables -A OUTPUT -d 172.16.2.0/22 -p tcp --sport 22 -j ACCEPT
-
-# MySQL (3306) pour application (PC_S)
-iptables -A INPUT -s 172.16.3.28 -p tcp --dport 3306 -j ACCEPT
-iptables -A OUTPUT -d 172.16.3.28 -p tcp --sport 3306 -j ACCEPT
-
-# MySQL (3306) pour DSI
-iptables -A INPUT -s 172.16.2.0/22 -p tcp --dport 3306 -j ACCEPT
-iptables -A OUTPUT -d 172.16.2.0/22 -p tcp --sport 3306 -j ACCEPT
 
 nohup bash -c 'while true; do nc -lnp 22; done' &
 nohup bash -c 'while true; do nc -lnp 3306; done' &
