@@ -1,27 +1,40 @@
 #!/bin/bash
-# On copie les fichiers de configuration initial.
+
 cp /shared/resolv-to-pc_dns.conf /etc/resolv.conf
 cp /shared/r_v/interfaces /etc/network/interfaces
-
-# On redémarre le service réseau.
 /etc/init.d/networking restart
+
+# ------------------------------------------------------------------------------
+
+THIS_NET="172.16.3.64/26"
+DSI_NET="172.16.2.0/24"
+
+DNS_SERVER="172.16.3.17"
+
+# ------------------------------------------------------------------------------
 
 iptables -P FORWARD DROP
 iptables -P OUTPUT DROP
 iptables -P INPUT DROP
 
-# PING (ICMP) pour la DSI
-iptables -A FORWARD -s 172.16.2.0/24 -p icmp -j ACCEPT
-iptables -A FORWARD -d 172.16.2.0/24 -p icmp -j ACCEPT
+# ------------------------------------------------------------------------------
 
-# DNS (53)
-iptables -A FORWARD -s 172.16.3.17 -p udp --sport 53 -j ACCEPT
-iptables -A FORWARD -d 172.16.3.17 -p udp --dport 53 -j ACCEPT
+# Allow established and related connections
+iptables -A FORWARD -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
 
-# HTTP (80)
-iptables -A FORWARD -p tcp --dport 80 -j ACCEPT
-iptables -A FORWARD -p tcp --sport 80 -j ACCEPT
+# ------------------------------------------------------------------------------
 
-# HTTPS (443)
-iptables -A FORWARD -p tcp --dport 443 -j ACCEPT
-iptables -A FORWARD -p tcp --sport 443 -j ACCEPT
+# PING (ICMP)
+iptables -A FORWARD -s $DSI_NET -p icmp --icmp-type echo-request -j ACCEPT
+iptables -A FORWARD -s $DSI_NET -p icmp --icmp-type echo-reply -j ACCEPT
+
+# DNS
+iptables -A FORWARD -s $THIS_NET -d $DNS_SERVER -p udp --dport 53 -j ACCEPT
+
+# ------------------------------------------------------------------------------
+
+# HTTP
+iptables -A FORWARD -s $THIS_NET -p tcp --dport 80 -j ACCEPT
+
+# HTTPS
+iptables -A FORWARD -s $THIS_NET -p tcp --dport 443 -j ACCEPT
