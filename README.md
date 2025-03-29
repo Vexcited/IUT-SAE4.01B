@@ -5,18 +5,18 @@ Ce projet est une extension de la SAE 3.01B qui vise à améliorer la sécurité
 ## Modifications principales par rapport à la SAE 3.01B
 
 1. **Séparation du routage en trois priorités** :
-   - Routeur haute priorité (`r_high`) : pour l'infrastructure critique et de haute priorité
-   - Routeur priorité moyenne (`r_mid`) : pour l'accès éducatif/universitaire
-   - Routeur basse priorité (`r_low`) : pour l'accès non-prioritaire
+  - Routeur haute priorité (`r_high`) : pour l'infrastructure critique et de haute priorité
+  - Routeur priorité moyenne (`r_mid`) : pour l'accès éducatif/universitaire
+  - Routeur basse priorité (`r_low`) : pour l'accès non-prioritaire
 
 2. **Classification des sous-réseaux** :
-   - Haute priorité : serveur S, personnel soignant, comptabilité, chercheurs, enseignants-chercheurs, DSI
-   - Priorité moyenne : étudiants, enseignants
-   - Basse priorité : patients, visiteurs
+  - Haute priorité : serveur S, personnel soignant, comptabilité, chercheurs, enseignants-chercheurs, DSI
+  - Priorité moyenne : étudiants, enseignants
+  - Basse priorité : patients, visiteurs
 
 3. **Accès à distance sécurisé** :
-   - Configuration SSH pour permettre l'accès à distance sécurisé depuis le réseau DSI
-   - Filtrage basé sur le principe du moindre privilège
+  - Configuration SSH pour permettre l'accès à distance sécurisé depuis le réseau DSI
+  - Filtrage basé sur le principe du moindre privilège
 
 ## Infrastructure
 
@@ -50,12 +50,21 @@ L'infrastructure réseau conserve les sous-réseaux suivants de la SAE 3.01B :
 - Autorise l'accès au site web public uniquement
 - Limite l'accès aux ressources internes
 
+## Configuration SSH pour gestion à distance
+
+Toutes les machines suivantes sont configurées pour permettre une gestion à distance sécurisée via SSH depuis le réseau DSI (172.16.2.0/24) :
+- Machines étudiants et enseignants
+- Personnel soignant
+- Comptabilité
+- Serveur S et toutes les machines sensibles (MAIL, BDD, AUX, DNS)
+- Tous les routeurs (r_high, r_mid, r_low)
+
 ## Tests automatisés
 
-Pour tester la configuration, exécutez sur n'importe quelle machine :
+Pour vérifier la configuration de sécurité et le routage prioritaire, un script de test est disponible :
 
 ```bash
-chmod +x /shared/testing/test.sh && /shared/testing/test.sh
+./test.sh
 ```
 
 ## Comparaison avec la SAE 3.01B
@@ -63,5 +72,6 @@ chmod +x /shared/testing/test.sh && /shared/testing/test.sh
 Par rapport à la configuration de la SAE 3.01B :
 - Amélioration de la résilience avec 3 routeurs distincts pour Internet au lieu d'un seul
 - Mise en place d'une gestion des priorités selon la criticité des services
-- Renforcement de la sécurité par l'accès SSH distant sécurisé
-- Tests automatisés plus complets pour valider la configuration
+- Renforcement de la sécurité par l'accès SSH distant sécurisé depuis le réseau DSI uniquement
+- Tests automatisés plus complets pour valider la configuration de sécurité et le routage prioritaire
+- Application stricte du principe du moindre privilège pour chaque sous-réseau
