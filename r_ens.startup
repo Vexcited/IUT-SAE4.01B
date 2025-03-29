@@ -14,9 +14,9 @@ MAIL_SERVER="172.16.2.3"
 
 # ------------------------------------------------------------------------------
 
-iptables -P FORWARD ACCEPT
-iptables -P OUTPUT ACCEPT
-iptables -P INPUT ACCEPT
+iptables -P FORWARD DROP
+iptables -P OUTPUT DROP
+iptables -P INPUT DROP
 
 # ------------------------------------------------------------------------------
 
